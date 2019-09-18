@@ -6,7 +6,7 @@
 TOP = .
 include $(TOP)/build.mk
 
-SUB_DIRS = utils ercc ecc_enclave ecc tlcc_enclave tlcc examples integration # docs
+SUB_DIRS = docker utils ercc ecc_enclave ecc tlcc_enclave tlcc examples integration # docs
 
 build : godeps
 
@@ -30,7 +30,7 @@ gotools:
 	# install goimports if not present
 	$(GO) get golang.org/x/tools/cmd/goimports
 
-godeps:
+godeps: gotools
 	$(GO) get github.com/spf13/viper
 	$(GO) get golang.org/x/sync/semaphore
 	$(GO) get github.com/pkg/errors
