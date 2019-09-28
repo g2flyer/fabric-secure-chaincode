@@ -3,6 +3,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+all:
+	i should fail ..
+
 TOP = .
 include $(TOP)/build.mk
 

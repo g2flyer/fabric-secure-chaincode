@@ -5,7 +5,8 @@
 dist: bionic
 language: go
 
-sudo: required
+invalid_command: true
+sudo: requiredFailure
 services:
   docker
 
@@ -15,9 +16,9 @@ addons:
       - protobuf-compiler
       - python-protobuf
 
-branches:
-  only:
-    - travis
+# branches:
+#   only:
+#     - master
 
 go_import_path: github.com/hyperledger-labs/fabric-private-chaincode
 
