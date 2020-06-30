@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-FROM node:8.16
+FROM node:12.18
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app

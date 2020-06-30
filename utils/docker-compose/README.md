@@ -163,11 +163,14 @@ The [examples](../../examples) and [demo](../../demo) directories has been
    ```
    export CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp
 
+   cd $FPC_PATH
+
    CHAN_ID=${CHANNEL_NAME}
 
    CC_ID=helloworld_test
    CC_PATH=examples/helloworld/_build/lib
    CC_VER="$(cat ${CC_PATH}/mrenclave)"
+   CC_SEQ="1"
    CC_EP="OR('Org1MSP.peer')"
 
    PKG=/tmp/hello-pkg.tar.gz
@@ -175,9 +178,9 @@ The [examples](../../examples) and [demo](../../demo) directories has been
    ${PEER_CMD} lifecycle chaincode package --lang fpc-c --label ${CC_ID} --path ${CC_PATH} ${PKG}
    ${PEER_CMD} lifecycle chaincode install ${PKG}
    PKG_ID=$(${PEER_CMD} lifecycle chaincode queryinstalled | awk "/Package ID: ${CC_ID}/{print}" | sed -n 's/^Package ID: //; s/, Label:.*$//;p')
-   ${PEER_CMD} lifecycle chaincode approveformyorg -C ${CHAN_ID} --package-id ${PKG_ID} --name ${CC_ID} --version ${CC_VER} --signature-policy ${CC_EP}
-   ${PEER_CMD} lifecycle chaincode checkcommitreadiness -C ${CHAN_ID} --name ${CC_ID} --version ${CC_VER} --signature-policy ${CC_EP}
-   ${PEER_CMD} lifecycle chaincode commit -C ${CHAN_ID} --name ${CC_ID} --version ${CC_VER}  --signature-policy ${CC_EP}
+   ${PEER_CMD} lifecycle chaincode approveformyorg -C ${CHAN_ID} --package-id ${PKG_ID} --name ${CC_ID} --version ${CC_VER} --sequence ${CC_SEQ} --signature-policy ${CC_EP}
+   ${PEER_CMD} lifecycle chaincode checkcommitreadiness -C ${CHAN_ID} --name ${CC_ID} --version ${CC_VER} --sequence ${CC_SEQ} --signature-policy ${CC_EP}
+   ${PEER_CMD} lifecycle chaincode commit -C ${CHAN_ID} --name ${CC_ID} --version ${CC_VER} --sequence ${CC_SEQ} --signature-policy ${CC_EP}
    ```
 
 5. Instantiate chaincode enclave

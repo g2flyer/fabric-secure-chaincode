@@ -1,10 +1,10 @@
 {
-    "name": "fabcar",
+    "name": "fpc-utils",
     "version": "1.0.0",
-    "description": "FabCar application implemented in JavaScript",
+    "description": "Fabric Private Chaincode Node-based commandline utilities",
     "engines": {
-        "node": ">=8",
-        "npm": ">=5"
+        "node": ">=12",
+        "npm": ">=6"
     },
     "scripts": {
         "lint": "eslint .",
@@ -14,8 +14,8 @@
     "author": "Hyperledger",
     "license": "Apache-2.0",
     "dependencies": {
-        "fabric-ca-client": "1.4.8",
-        "fabric-network": "1.4.8"
+        "fabric-ca-client": "2.2.0",
+        "fabric-network": "2.2.0"
     },
     "devDependencies": {
         "eslint": "^6.8.0"
