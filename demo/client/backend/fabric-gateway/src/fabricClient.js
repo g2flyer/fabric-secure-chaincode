@@ -6,8 +6,9 @@
 
 'use strict';
 
-const FabricCAClient = require('fabric-ca-client');
-const { Gateway, FileSystemWallet, X509WalletMixin } = require('fabric-network');
+const FabricCAServices  = require('fabric-ca-client');
+const { User }  = require('fabric-common');
+const { Gateway, Wallets } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
 
@@ -59,6 +60,14 @@ function getClientCAUrl () {
     let ca = connectionProfile.organizations[clientOrgName]
         .certificateAuthorities[0];
     return connectionProfile.certificateAuthorities[ca].url;
+}
+
+//  get client's organization's CA URL from connectionProfile
+function getClientCAName () {
+    let clientOrgName = connectionProfile.client.organization;
+    let ca = connectionProfile.organizations[clientOrgName]
+        .certificateAuthorities[0];
+    return ca;
 }
 
 async function readConfigData () {
@@ -252,13 +261,35 @@ async function getRegisteredUsers() {
     let client, fabric_ca_client, idService;
 
     try {
-        client = adminGateway.getClient();
-        fabric_ca_client = client.getCertificateAuthority();
-        idService = fabric_ca_client.newIdentityService();
-        let adminIdentity = await adminGateway.getCurrentIdentity();
+        const ca  = new FabricCAServices(getClientCAUrl(),  { trustedRoots: null, verify: false }, getClientCAName());
+//console.log("MST DEBUG: -1 %o" , ca);
+        idService = ca.newIdentityService();
 
         //  adminIdentity should be a hf.Registrar
-        let userList = await idService.getAll(adminIdentity);
+/*
+console.log("MST DEBUG: 0");
+	const registrar = new User(adminUserName);
+console.log("MST DEBUG: 1 %o" , registrar);
+	const adminIdentity = await wallet.get(adminUserName);
+console.log("MST DEBUG: 2 %o" , adminIdentity);
+	registrar.setSigningIdentity(adminIdentity);
+console.log("MST DEBUG: 3 %o", registrar);
+*/
+		let enrollment;
+		// enroll the new created user at ca_Org1
+		enrollment = await ca.enroll({
+		     enrollmentID: 'admin',
+		    // enrollmentID: adminUserName,
+			enrollmentSecret: secret
+		});
+//console.log("MST DEBUG: 0 %o" , enrollment);
+  	const registrar = new User(adminUserName);
+//console.log("MST DEBUG: 1 %o" , registrar);
+	await registrar.setEnrollment(enrollment.key, enrollment.certificate, 'Org1MSP');
+//console.log("MST DEBUG: 2 %o" , registrar);
+
+        let userList = await idService.getAll(registrar);
+console.log("MST DEBUG: 4 %o", userList);
 
         let  identities = userList.result.identities;
 
@@ -290,16 +321,22 @@ async function enrollUser (userName, secret) {
         }
 
         // Create a new CA client for interacting with the CA.
-        const caclient = new FabricCAClient(getClientCAUrl());
+        const caclient = new FabricCAServices(getClientCAUrl());
 
         const enrollment = await caclient.enroll(
             {   enrollmentID: userName,
                 enrollmentSecret: secret  });
 
         let mspid = await getClientMspid();
-        const identity = await X509WalletMixin.createIdentity(mspid,
-            enrollment.certificate, enrollment.key.toBytes());
-        await wallet.import(userName, identity);
+        const x509Identity = {
+            credentials: {
+                certificate: enrollment.certificate,
+                privateKey: enrollment.key.toBytes(),
+            },
+            mspId: mspid,
+            type: 'X.509',
+        };
+        await wallet.put(userName, x509Identity);
         return prepareStatus(SUCCESS,
             'Successfully enrolled user ' + userName + 'and imported it into the wallet');
 

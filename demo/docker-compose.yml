@@ -29,10 +29,10 @@ services:
     ports:
       - "3000:3000"
     working_dir: /usr/src/app
-    command: npm start
-    # volumes:
-      # - ${DOCKERD_FPC_PATH}/demo/client/backend/fabric-gateway/src:/usr/src/app/src
-      # - ${DOCKERD_FPC_PATH}/demo/client/backend/fabric-gateway/config.json:/usr/src/app/config.json
+    DEBUG: command:  npm start
+    #volumes:
+      #- ${DOCKERD_FPC_PATH}/demo/client/backend/fabric-gateway/:/usr/src/app/
+      #- ${DOCKERD_FPC_PATH}/demo/client/backend/fabric-gateway/config.json:/usr/src/app/config.json
 
   auction_frontend:
     container_name: auction_frontend

@@ -21,7 +21,9 @@ COPY \
 COPY src /usr/src/app/src
 COPY gateway /usr/src/app/gateway
 
-RUN npm install \
-  &&  patch -R -p0 < ./fabric-sdk-node_fabric-network_lib_transaction.js.patch
+# MST DEBUG
+# RUN npm install \
+#  &&  patch -R -p0 < ./fabric-sdk-node_fabric-network_lib_transaction.js.patch
+RUN npm install
 
 CMD npm start
