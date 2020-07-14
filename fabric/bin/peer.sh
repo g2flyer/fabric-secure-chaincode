@@ -304,7 +304,7 @@ handle_lifecycle_chaincode_approveformyorg() {
         # all check passed
 
         # add FPC default validation plugin to argument list
-        ARGS_EXEC=( "${ARGS_EXEC[@]}" "-V" "ecc-vscc" )
+        ARGS_EXEC=( "${ARGS_EXEC[@]}" "-V" "fpc-vscc" )
     fi
 
     # - do normal approve (and exit if not successfull)
@@ -361,7 +361,7 @@ handle_lifecycle_chaincode_checkcommitreadiness() {
         # all check passed
 
         # add FPC default validation plugin to argument list
-        ARGS_EXEC=( "${ARGS_EXEC[@]}" "-V" "ecc-vscc" )
+        ARGS_EXEC=( "${ARGS_EXEC[@]}" "-V" "fpc-vscc" )
     fi
 
     # - call real peer so channel is joined
@@ -410,7 +410,7 @@ handle_lifecycle_chaincode_commit() {
         # all check passed
 
         # add FPC default validation plugin to argument list
-        ARGS_EXEC=( "${ARGS_EXEC[@]}" "-V" "ecc-vscc" )
+        ARGS_EXEC=( "${ARGS_EXEC[@]}" "-V" "fpc-vscc" )
     fi
 
     # - call real peer so chaincode is committed
